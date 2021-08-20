@@ -5,31 +5,52 @@ timedatectl set-ntp true
 pacman -Sy --noconfirm
 
 # Updating mirrorlist
-echo "\n=================="
+echo "=================="
+echo ""
 echo "Setting up mirrors"
-echo "\n==================\n\n"
+echo ""
+echo "=================="
 pacman -S reflector --noconfirm
+
+echo ""
+echo "=================="
+echo ""
+echo "Starting reflector"
+echo ""
+echo "=================="
 reflector --latest 200 --country Brazil,Canada,Japan,Australia,Iceland,Norway --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 
 #Setting up dependencies
-echo "\n=================="
+echo ""
+echo "=================="
+echo ""
 echo "Installing prerequisites"
-echo "\n==================\n\n"
+echo ""
+echo "=================="
 pacman -S --noconfirm btrfs-progs
 
-echo "\n=================="
+echo ""
+echo "=================="
+echo ""
 echo " Select your disk to format"
-echo "\n==================\n\n"
+echo ""
+echo "=================="
+echo ""
 
 lsblk
 
+echo ""
+echo "=================="
+echo ""
 echo "Please enter disk: (example /dev/sda)"
+echo ""
 
 read DISK
 
 echo -e "Formatting disk...$HR"
 
-dd if=/dev/zero of=${DISK} status=progress
+#dd if=/dev/zero of=${DISK} status=progress
+sgdisk -Z ${DISK}
 
 sgdisk -a 2048 -o ${DISK}
 
