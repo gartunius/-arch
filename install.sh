@@ -5,6 +5,7 @@ timedatectl set-ntp true
 pacman -Sy --noconfirm
 
 # Updating mirrorlist
+echo ""
 echo "=================="
 echo ""
 echo "Setting up mirrors"
@@ -18,7 +19,7 @@ echo ""
 echo "Starting reflector"
 echo ""
 echo "=================="
-reflector --latest 200 --country Brazil,Canada,Japan,Australia,Iceland,Norway --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+reflector --latest 10 --country Brazil,Canada,Japan,Australia --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 
 cat /etc/pacman.d/mirrorlist
 
@@ -76,5 +77,5 @@ echo ""
 echo "=================="
 echo ""
 
-cryptsetup --type=luks2 -s 512 -h sha512 -i 8000 --use-random -y luksFormat cryptroot
+cryptsetup --type=luks2 -s 512 -h sha512 -i 8000 --use-random -y luksFormat ${DISK}
 
