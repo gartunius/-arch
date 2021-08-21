@@ -1,4 +1,4 @@
-pacman -S rkhunter ufw --noconfirm
+pacman -S rkhunter ufw sway waybar xorg-xwayland --noconfirm
 
 systemctl enable ufw
 
