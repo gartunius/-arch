@@ -30,7 +30,7 @@ echo ""
 echo "Installing prerequisites"
 echo ""
 echo "=================="
-pacman -S --noconfirm btrfs-progs
+pacman -S --noconfirm btrfs-progs neovim
 
 echo ""
 echo "=================="
@@ -117,3 +117,37 @@ mount -o noatime,nodiratime,compress=zstd,space_cache,ssd,subvol=@home /dev/mapp
 mount -o noatime,nodiratime,compress=zstd,space_cache,ssd,subvol=@pkg /dev/mapper/cryptroot /mnt/var/cache/pacman/pkg
 mount -o noatime,nodiratime,compress=zstd,space_cache,ssd,subvol=@snapshots /dev/mapper/cryptroot /mnt/.snapshots
 mount -o noatime,nodiratime,compress=zstd,space_cache,ssd,subvolid=5 /dev/mapper/cryptroot /mnt/btrfs
+
+echo ""
+echo "=================="
+echo ""
+echo "Preparing to install"
+echo ""
+echo "=================="
+echo ""
+
+mount /dev/sda1 /mnt/boot
+
+pacstrap /mnt linux linux-lts linux-firmware base base-devel btrfs-progs amd-ucode  neovim
+
+genfstab -U /mnt >> /mnt/etc/fstab
+
+echo ""
+echo "=================="
+echo ""
+echo "Preparing to install"
+echo ""
+echo "=================="
+echo ""
+
+arch-chroot /mnt
+
+echo gabriel > /etc/hostname
+
+echo LANG=en_US.UTF-8 > /etc/locale.conf
+
+nvim /etc/locale.gen
+
+locale-gen
+
+ln -sf /usr/share/zoneinfo/America/SaoPaulo /etc/localtime
