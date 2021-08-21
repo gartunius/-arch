@@ -63,9 +63,7 @@ sgdisk -n 2:0:0     ${DISK}
 
 sgdisk -t 1:ef00 ${DISK}
 
-sgdisk -t 2:8300 ${DISK}
-
-sgdisk -c 1:"UEFISYS" ${DISK}
+sgdisk -c 1:"UEFI" ${DISK}
 
 sgdisk -c 2:"ROOT" ${DISK}
 
@@ -95,3 +93,27 @@ echo ""
 mkfs.vfat -F32 -n EFI ${CRYPTBOOT}
 
 mkfs.btrfs -L ROOT /dev/mapper/cryptroot
+
+echo ""
+echo "=================="
+echo ""
+echo "BTRFS Setup"
+echo ""
+echo "=================="
+echo ""
+
+mount /dev/mapper/cryptroot /mnt
+
+btrfs sub create /mnt/@
+btrfs sub create /mnt/@home
+btrfs sub create /mnt/@pkg
+btrfs sub create /mnt/@snapshots
+
+umount /mnt
+
+mount -o noatime,nodiratime,compress=zstd,space_cache,ssd,subvol=@ /dev/mapper/cryptroot /mnt
+mkdir -p /mnt/{boot,home,var/cache/pacman/pkg,.snapshots,btrfs}
+mount -o noatime,nodiratime,compress=zstd,space_cache,ssd,subvol=@home /dev/mapper/cryptroot /mnt/home
+mount -o noatime,nodiratime,compress=zstd,space_cache,ssd,subvol=@pkg /dev/mapper/cryptroot /mnt/var/cache/pacman/pkg
+mount -o noatime,nodiratime,compress=zstd,space_cache,ssd,subvol=@snapshots /dev/mapper/cryptroot /mnt/.snapshots
+mount -o noatime,nodiratime,compress=zstd,space_cache,ssd,subvolid=5 /dev/mapper/cryptroot /mnt/btrfs
