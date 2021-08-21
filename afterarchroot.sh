@@ -2,8 +2,7 @@ echo gartunius > /etc/hostname
 
 echo LANG=en_US.UTF-8 > /etc/locale.conf
 
-#sed -i 's/#en_US.UTF-8/en_US.UTF-8/'
-nvim /etc/locale.gen
+sed -i 's/#en_US.UTF-8/en_US.UTF-8/'
 
 locale-gen
 
@@ -19,10 +18,18 @@ echo ""
 
 passwd
 
-echo "127.0.0.1	gabriel.localdomain	gabriel" >> /etc/hosts
+echo ""
+echo "=================="
+echo ""
+echo "Please enter the username: "
+echo ""
+
+read USERNAME
+
+echo "127.0.0.1	${USERNAME}.localdomain	gabriel" >> /etc/hosts
 echo "::1		localhost.localdomain	localhost" >> /etc/hosts
 
-nvim /etc/hosts
+echo "${USERNAME}" > /etc/hosts
 
 echo 'HOOKS=(base keyboard udev autodetect modconf block keymap encrypt btrfs filesystems)' >> /etc/mkinitcpio.conf
 
