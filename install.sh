@@ -77,5 +77,21 @@ echo ""
 echo "=================="
 echo ""
 
-cryptsetup --type=luks2 -s 512 -h sha512 -i 8000 --use-random -y luksFormat ${DISK}
+CRYPTROOT=${DISK}2
+CRYPTBOOT=${DISK}1
 
+cryptsetup --type=luks2 -s 512 -h sha512 -i 8000 --use-random -y luksFormat ${CRYPTROOT}
+
+cryptsetup open ${CRYPTROOT} cryptroot
+
+echo ""
+echo "=================="
+echo ""
+echo "Formating disks"
+echo ""
+echo "=================="
+echo ""
+
+mkfs.vfat -F32 -n EFI ${CRYPTBOOT}
+
+mkfs.btrfs -L ROOT /dev/mapper/cryptroot
