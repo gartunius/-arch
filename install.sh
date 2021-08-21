@@ -76,7 +76,7 @@ echo "=================="
 echo ""
 
 CRYPTROOT=${DISK}2
-CRYPTBOOT=${DISK}1
+BOOT=${DISK}1
 
 cryptsetup --type=luks2 -s 512 -h sha512 -i 8000 --use-random -y luksFormat ${CRYPTROOT}
 
@@ -90,7 +90,7 @@ echo ""
 echo "=================="
 echo ""
 
-mkfs.vfat -F32 -n EFI ${CRYPTBOOT}
+mkfs.vfat -F32 -n EFI ${BOOT}
 
 mkfs.btrfs -L ROOT /dev/mapper/cryptroot
 
@@ -128,7 +128,7 @@ echo ""
 
 mount /dev/sda1 /mnt/boot
 
-pacstrap /mnt linux linux-lts linux-firmware base base-devel btrfs-progs amd-ucode  neovim
+pacstrap /mnt linux linux-lts linux-firmware base base-devel btrfs-progs amd-ucode  neovim vim
 
 genfstab -U /mnt >> /mnt/etc/fstab
 
@@ -141,5 +141,6 @@ echo "=================="
 echo ""
 
 cp afterarchroot.sh /mnt/
+cp personalsetup.sh /mnt/
 
 arch-chroot /mnt
