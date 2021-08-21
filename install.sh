@@ -20,6 +20,8 @@ echo ""
 echo "=================="
 reflector --latest 200 --country Brazil,Canada,Japan,Australia,Iceland,Norway --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 
+cat /etc/pacman.d/mirrorlist
+
 #Setting up dependencies
 echo ""
 echo "=================="
@@ -65,4 +67,14 @@ sgdisk -t 2:8300 ${DISK}
 sgdisk -c 1:"UEFISYS" ${DISK}
 
 sgdisk -c 2:"ROOT" ${DISK}
+
+echo ""
+echo "=================="
+echo ""
+echo "Encrypting disk"
+echo ""
+echo "=================="
+echo ""
+
+cryptsetup --type=luks2 -s 512 -h sha512 -i 8000 --use-random -y luksFormat cryptroot
 
