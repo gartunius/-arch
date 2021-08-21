@@ -126,7 +126,7 @@ echo ""
 echo "=================="
 echo ""
 
-mount /dev/sda1 /mnt/boot
+mount ${BOOT} /mnt/boot
 
 pacstrap /mnt linux linux-lts linux-firmware base base-devel btrfs-progs amd-ucode  neovim vim
 
