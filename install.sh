@@ -135,19 +135,11 @@ genfstab -U /mnt >> /mnt/etc/fstab
 echo ""
 echo "=================="
 echo ""
-echo "Preparing to install"
-echo ""
+echo "Chroot (run the next script!!!!)"
+echo "./afterarchroot.sh"
 echo "=================="
 echo ""
 
+cp afterarchroot.sh /mnt/
+
 arch-chroot /mnt
-
-echo gabriel > /etc/hostname
-
-echo LANG=en_US.UTF-8 > /etc/locale.conf
-
-nvim /etc/locale.gen
-
-locale-gen
-
-ln -sf /usr/share/zoneinfo/America/SaoPaulo /etc/localtime
