@@ -57,7 +57,7 @@ echo "title Arch Linux" > /boot/loader/entries/arch.conf
 echo "linux /vmlinuz-linux" >> /boot/loader/entries/arch.conf
 echo "initrd /amd-ucode.img" >> /boot/loader/entries/arch.conf
 echo "initrd /initramfs-linux.img" >> /boot/loader/entries/arch.conf
-echo "options cryptdevice=UUID=<UUID-OF-ROOT-PARTITION>:luks:allow-discards root=/dev/mapper/cryptroot rootflags=subvol=@ rd.luks.options=discard rw" >> /boot/loader/entries/arch.conf
+echo "options cryptdevice=UUID=<UUID-OF-ROOT-PARTITION>:cryptroot:allow-discards root=/dev/mapper/cryptroot rootflags=subvol=@ rd.luks.options=discard rw" >> /boot/loader/entries/arch.conf
 
 echo "${blkid}" >> /boot/loader/entries/arch.conf
 
@@ -65,8 +65,10 @@ nvim /boot/loader/entries/arch.conf
 
 echo """
 default  arch.conf
-timeout  4
-""" >> /boot/loader/loader.conf
+timeout  0
+console-mode max
+editor no
+""" > /boot/loader/loader.conf
 
 
 bootctl update
