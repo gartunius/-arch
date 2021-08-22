@@ -37,7 +37,7 @@ echo "${USERNAME}" > /etc/hosts
 
 echo 'HOOKS=(base keyboard udev autodetect modconf block keymap encrypt btrfs filesystems)' >> /etc/mkinitcpio.conf
 
-nvim /etc/mkinitcpio.conf
+sed -i 's/HOOKS.*/HOOKS=(base keyboard udev autodetect modconf block keymap encrypt btrfs filesystems)/' /etc/mkinitcpio.conf
 
 mkinitcpio -p linux
 
