@@ -1,4 +1,4 @@
-echo gartunius > /etc/hostname
+echo murphy > /etc/hostname
 
 echo LANG=en_US.UTF-8 > /etc/locale.conf
 
@@ -27,6 +27,8 @@ echo ""
 read USERNAME
 
 useradd -m -G wheel ${USERNAME}
+
+passwd ${USERNAME}
 
 visudo
 
@@ -59,8 +61,6 @@ echo "initrd /amd-ucode.img" >> /boot/loader/entries/arch.conf
 echo "initrd /initramfs-linux.img" >> /boot/loader/entries/arch.conf
 echo "options cryptdevice=UUID=<UUID-OF-ROOT-PARTITION>:cryptroot:allow-discards root=/dev/mapper/cryptroot rootflags=subvol=@ rd.luks.options=discard rw" >> /boot/loader/entries/arch.conf
 
-echo "${blkid}" >> /boot/loader/entries/arch.conf
-
 nvim /boot/loader/entries/arch.conf
 
 echo """
@@ -69,7 +69,6 @@ timeout  0
 console-mode max
 editor no
 """ > /boot/loader/loader.conf
-
 
 bootctl update
 
