@@ -57,7 +57,7 @@ echo "title Arch Linux" > /boot/loader/entries/arch.conf
 echo "linux /vmlinuz-linux" >> /boot/loader/entries/arch.conf
 echo "initrd /amd-ucode.img" >> /boot/loader/entries/arch.conf
 echo "initrd /initramfs-linux.img" >> /boot/loader/entries/arch.conf
-echo "options cryptdevice=UUID=<UUID-OF-ROOT-PARTITION>:luks:allow-discards root=/dev/mapper/cryptroot rootflags=subvol=@ rd.luks.options=discard rw"
+echo "options cryptdevice=UUID=<UUID-OF-ROOT-PARTITION>:luks:allow-discards root=/dev/mapper/cryptroot rootflags=subvol=@ rd.luks.options=discard rw" >> /boot/loader/entries/arch.conf
 
 echo "${blkid}" >> /boot/loader/entries/arch.conf
 

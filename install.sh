@@ -128,7 +128,7 @@ echo ""
 
 mount ${BOOT} /mnt/boot
 
-pacstrap /mnt linux linux-lts linux-firmware base base-devel btrfs-progs amd-ucode  neovim vim
+pacstrap /mnt linux linux-lts linux-firmware base base-devel btrfs-progs amd-ucode neovim vim networkmanager network-manager-applet
 
 genfstab -U /mnt >> /mnt/etc/fstab
 

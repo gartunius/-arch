@@ -2,7 +2,7 @@ reflector --latest 10 --country Brazil,Canada,Japan,Australia --protocol https -
 
 pacman -S archlinux-keyring --noconfirm
 
-pacman -S rkhunter ufw sway waybar xorg-xwayland firefox --noconfirm
+pacman -S rkhunter ufw sway waybar xorg-xwayland firefox ttf-ubuntu-font-family swaylock rsync
 
 systemctl enable ufw
 
