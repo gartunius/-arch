@@ -54,14 +54,15 @@ mkfs.btrfs -L ROOT /dev/mapper/cryptroot
 
 mount /dev/mapper/cryptroot /mnt
 
-btrfs subvolume create /mnt/@
-btrfs subvolume create /mnt/@home
+btrfs subvolume create /mnt/btrfs/ROOT
+btrfs subvolume create /mnt/btrfs/home
+btrfs subvolume create /mnt/btrfs/snapshots
 
 umount /mnt
 
-mount -o noatime,nodiratime,compress=zstd,space_cache,ssd,subvol=@ /dev/mapper/cryptroot /mnt
+mount -o noatime,nodiratime,compress=zstd,space_cache,ssd,subvol=ROOT /dev/mapper/cryptroot /mnt
 mkdir -p /mnt/{boot,home}
-mount -o noatime,nodiratime,compress=zstd,space_cache,ssd,subvol=@home /dev/mapper/cryptroot /mnt/home
+mount -o noatime,nodiratime,compress=zstd,space_cache,ssd,subvol=home /dev/mapper/cryptroot /mnt/home
 
 mount ${BOOT} /mnt/boot
 
