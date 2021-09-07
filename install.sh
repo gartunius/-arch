@@ -54,15 +54,28 @@ mkfs.btrfs -L ROOT /dev/mapper/cryptroot
 
 mount /dev/mapper/cryptroot /mnt
 
-btrfs subvolume create /mnt/btrfs/ROOT
-btrfs subvolume create /mnt/btrfs/home
-btrfs subvolume create /mnt/btrfs/snapshots
+btrfs subvolume create /mnt/@
+btrfs subvolume create /mnt/@home
+btrfs subvolume create /mnt/@var
+btrfs subvolume create /mnt/@opt
+btrfs subvolume create /mnt/@tmp
+btrfs subvolume create /mnt/@.snapshots
 
 umount /mnt
 
-mount -o noatime,nodiratime,compress=zstd,space_cache,ssd,subvol=ROOT /dev/mapper/cryptroot /mnt
-mkdir -p /mnt/{boot,home}
-mount -o noatime,nodiratime,compress=zstd,space_cache,ssd,subvol=home /dev/mapper/cryptroot /mnt/home
+mount -o noatime,commit=120,compress=zstd,space_cache,subvol=@ /dev/sda3 /mnt
+# You need to manually create folder to mount the other subvolumes at
+mkdir /mnt/{boot,home,var,opt,tmp,.snapshots}
+
+mount -o noatime,commit=120,compress=zstd,space_cache,ssd,subvol=@home /dev/mapper/cryptroot /mnt/home
+mount -o noatime,commit=120,compress=zstd,space_cache,ssd,subvol=@opt /dev/mapper/cryptroot /mnt/opt
+mount -o noatime,commit=120,compress=zstd,space_cache,ssd,subvol=@tmp /dev/mapper/cryptroot /mnt/tmp
+mount -o noatime,commit=120,compress=zstd,space_cache,ssd,subvol=@.snapshots /dev/mapper/cryptroot /mnt/.snapshots
+mount -o subvol=@var /dev/mapper/cryptroot /mnt/var
+
+#mount -o noatime,nodiratime,compress=zstd,space_cache,ssd,subvol=@ /dev/mapper/cryptroot /mnt
+#mkdir -p /mnt/{boot,home}
+#mount -o noatime,nodiratime,compress=zstd,space_cache,ssd,subvol=@home /dev/mapper/cryptroot /mnt/home
 
 mount ${BOOT} /mnt/boot
 
