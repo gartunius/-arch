@@ -59,4 +59,4 @@ editor no
 bootctl update
 
 pacman -S terminus-font
-echo "FONT=ter-v28n" > /etc/vconsole.conf
+echo "FONT=ter-v24n" > /etc/vconsole.conf
