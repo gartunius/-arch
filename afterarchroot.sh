@@ -9,19 +9,13 @@ locale-gen
 ln -sf /usr/share/zoneinfo/America/SaoPaulo /etc/localtime
 
 echo ""
-echo "=================="
-echo ""
 echo "Set root password"
-echo ""
-echo "=================="
 echo ""
 
 passwd
 
 echo ""
-echo "=================="
-echo ""
-echo "Please enter the username: "
+echo "Enter the username: "
 echo ""
 
 read USERNAME
@@ -37,19 +31,11 @@ echo "::1		localhost.localdomain	localhost" >> /etc/hosts
 
 echo "${USERNAME}" > /etc/hosts
 
-echo 'HOOKS=(base keyboard udev autodetect modconf block keymap encrypt btrfs filesystems)' >> /etc/mkinitcpio.conf
+# echo 'HOOKS=(base keyboard udev autodetect modconf block keymap encrypt btrfs filesystems)' >> /etc/mkinitcpio.conf
 
 sed -i 's/HOOKS.*/HOOKS=(base keyboard udev autodetect modconf block keymap encrypt btrfs filesystems)/' /etc/mkinitcpio.conf
 
 mkinitcpio -p linux
-
-echo ""
-echo "=================="
-echo ""
-echo "Installing bootloader"
-echo ""
-echo "=================="
-echo ""
 
 bootctl --path=/boot install
 
@@ -72,3 +58,5 @@ editor no
 
 bootctl update
 
+pacman -S terminus-font
+echo "FONT=ter-v28n" > /etc/vconsole.conf
