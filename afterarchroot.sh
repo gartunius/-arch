@@ -29,8 +29,6 @@ visudo
 echo "127.0.0.1	${USERNAME}.localdomain	gabriel" >> /etc/hosts
 echo "::1		localhost.localdomain	localhost" >> /etc/hosts
 
-echo "${USERNAME}" > /etc/hosts
-
 sed -i 's/HOOKS.*/HOOKS=(base keyboard udev autodetect modconf block keymap encrypt btrfs filesystems)/' /etc/mkinitcpio.conf
 
 mkinitcpio -p linux
