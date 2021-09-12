@@ -1,13 +1,10 @@
-# Setting up the correct timezone
-timedatectl set-ntp true
-
 # Updating package database
 pacman -Sy --noconfirm
 
 # Updating mirrorlist
 pacman -S reflector --noconfirm
 
-cat /etc/pacman.d/mirrorlist
+reflector --latest 200 --protocol https --sort rate --country Canada,Brazil,Japan,Australia,Norway,Iceland --save /etc/pacman.d/mirrorlist
 
 #Setting up dependencies
 pacman -S --noconfirm btrfs-progs neovim
@@ -63,19 +60,14 @@ btrfs subvolume create /mnt/@.snapshots
 
 umount /mnt
 
-mount -o noatime,commit=120,compress=zstd,space_cache,subvol=@ /dev/sda3 /mnt
-# You need to manually create folder to mount the other subvolumes at
-mkdir /mnt/{boot,home,var,opt,tmp,.snapshots}
+mount -o noatime,commit=120,compress=zstd,space_cache,subvol=@ /dev/mapper/cryptroot /mnt
+
+mkdir /mnt/{boot,home,var,opt,tmp}
 
 mount -o noatime,commit=120,compress=zstd,space_cache,ssd,subvol=@home /dev/mapper/cryptroot /mnt/home
 mount -o noatime,commit=120,compress=zstd,space_cache,ssd,subvol=@opt /dev/mapper/cryptroot /mnt/opt
 mount -o noatime,commit=120,compress=zstd,space_cache,ssd,subvol=@tmp /dev/mapper/cryptroot /mnt/tmp
-mount -o noatime,commit=120,compress=zstd,space_cache,ssd,subvol=@.snapshots /dev/mapper/cryptroot /mnt/.snapshots
 mount -o subvol=@var /dev/mapper/cryptroot /mnt/var
-
-#mount -o noatime,nodiratime,compress=zstd,space_cache,ssd,subvol=@ /dev/mapper/cryptroot /mnt
-#mkdir -p /mnt/{boot,home}
-#mount -o noatime,nodiratime,compress=zstd,space_cache,ssd,subvol=@home /dev/mapper/cryptroot /mnt/home
 
 mount ${BOOT} /mnt/boot
 
