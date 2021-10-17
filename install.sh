@@ -1,13 +1,7 @@
 # Updating package database
 pacman -Sy --noconfirm
 
-# Updating mirrorlist
-pacman -S reflector --noconfirm
-
-reflector --latest 200 --protocol https --sort rate --country Canada,Brazil,Japan,Australia,Norway,Iceland --save /etc/pacman.d/mirrorlist
-
-#Setting up dependencies
-pacman -S --noconfirm btrfs-progs neovim
+pacman -S --noconfirm reflector btrfs-progs neovim
 
 lsblk
 
@@ -20,7 +14,6 @@ echo ""
 read DISK
 
 # Formating disk
-dd if=/dev/zero of=${DISK} status=progress
 sgdisk -Z ${DISK}
 
 # Creating root and boot partitions
@@ -36,8 +29,8 @@ sgdisk -c 1:"UEFI" ${DISK}
 
 sgdisk -c 2:"ROOT" ${DISK}
 
-CRYPTROOT=${DISK}2
-BOOT=${DISK}1
+CRYPTROOT=${DISK}p2
+BOOT=${DISK}p1
 
 # Encrypting
 cryptsetup --type=luks2 -s 512 -h sha512 -i 8000 --use-random -y luksFormat ${CRYPTROOT}
@@ -56,7 +49,6 @@ btrfs subvolume create /mnt/@home
 btrfs subvolume create /mnt/@var
 btrfs subvolume create /mnt/@opt
 btrfs subvolume create /mnt/@tmp
-btrfs subvolume create /mnt/@.snapshots
 
 umount /mnt
 
@@ -72,6 +64,7 @@ mount -o subvol=@var /dev/mapper/cryptroot /mnt/var
 mount ${BOOT} /mnt/boot
 
 # Installing system packages
+reflector --latest 200 --protocol https --sort rate --country Brazil,Canada,Japan,Australia,Norway,Iceland --save /etc/pacman.d/mirrorlist
 pacstrap /mnt linux linux-lts linux-firmware base base-devel btrfs-progs amd-ucode neovim vim networkmanager network-manager-applet
 
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -85,6 +78,5 @@ echo "=================="
 echo ""
 
 cp afterarchroot.sh /mnt/
-cp personalsetup.sh /mnt/
 
 arch-chroot /mnt
