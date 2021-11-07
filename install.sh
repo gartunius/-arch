@@ -5,9 +5,7 @@ pacman -S --noconfirm reflector btrfs-progs neovim
 
 lsblk
 
-echo ""
 echo "=================="
-echo ""
 echo "Please enter disk to install: (example /dev/sda)"
 echo ""
 
@@ -46,25 +44,23 @@ mount /dev/mapper/cryptroot /mnt
 
 btrfs subvolume create /mnt/@
 btrfs subvolume create /mnt/@home
-btrfs subvolume create /mnt/@var
-btrfs subvolume create /mnt/@opt
-btrfs subvolume create /mnt/@tmp
+btrfs subvolume create /mnt/@snapshots
+btrfs subvolume create /mnt/@var_log
 
 umount /mnt
 
 mount -o noatime,commit=120,compress=zstd,space_cache,subvol=@ /dev/mapper/cryptroot /mnt
 
-mkdir /mnt/{boot,home,var,opt,tmp}
+mkdir -p /mnt/{boot,home,var/log}
 
 mount -o noatime,commit=120,compress=zstd,space_cache,ssd,subvol=@home /dev/mapper/cryptroot /mnt/home
-mount -o noatime,commit=120,compress=zstd,space_cache,ssd,subvol=@opt /dev/mapper/cryptroot /mnt/opt
-mount -o noatime,commit=120,compress=zstd,space_cache,ssd,subvol=@tmp /dev/mapper/cryptroot /mnt/tmp
-mount -o subvol=@var /dev/mapper/cryptroot /mnt/var
+mount -o subvol=@var_log /dev/mapper/cryptroot /mnt/var/log
 
 mount ${BOOT} /mnt/boot
 
 # Installing system packages
 reflector --latest 200 --protocol https --sort rate --country Brazil,Canada,Japan,Australia,Norway,Iceland --save /etc/pacman.d/mirrorlist
+
 pacstrap /mnt linux linux-lts linux-firmware base base-devel btrfs-progs amd-ucode neovim vim networkmanager network-manager-applet
 
 genfstab -U /mnt >> /mnt/etc/fstab

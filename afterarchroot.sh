@@ -31,7 +31,7 @@ echo "::1		localhost.localdomain	localhost" >> /etc/hosts
 
 sed -i 's/HOOKS.*/HOOKS=(base keyboard udev autodetect modconf block keymap encrypt btrfs filesystems)/' /etc/mkinitcpio.conf
 
-mkinitcpio -p linux
+mkinitcpio -p linux-lts
 
 bootctl --path=/boot install
 
@@ -44,6 +44,8 @@ echo "linux /vmlinuz-linux" >> /boot/loader/entries/arch.conf
 echo "initrd /amd-ucode.img" >> /boot/loader/entries/arch.conf
 echo "initrd /initramfs-linux.img" >> /boot/loader/entries/arch.conf
 echo "options cryptdevice=UUID=<UUID-OF-ROOT-PARTITION>:cryptroot:allow-discards root=/dev/mapper/cryptroot rootflags=subvol=@ rd.luks.options=discard rw" >> /boot/loader/entries/arch.conf
+
+blkid >> /boot/loader/entries/arch.conf
 
 nvim /boot/loader/entries/arch.conf
 
@@ -61,15 +63,7 @@ echo "FONT=ter-v24n" > /etc/vconsole.conf
 
 pacman -S archlinux-keyring --noconfirm
 
-pacman -S rkhunter ufw sway waybar xorg-xwayland firefox ttf-ubuntu-font-family swaylock rsync keepassxc pipewire pipewire-pulse pipewire-media-session thunar thunar-archive-plugin thunar-media-tags-plugin thunar-volman gvfs tumbler tmux alacritty pavucontrol chromium adobe-source-han-sans-jp-fonts adobe-source-han-serif-jp-fonts deluge-gtk cronie etckeeper xdg-desktop-portal-wlr wl-clipboard snapper bluez blueman adobe-source-code-pro-fonts adobe-source-sans-fonts adobe-source-serif-fonts noto-fonts noto-fonts-emoji noto-fonts-extra otf-font-awesome ttf-carlito ttf-droid ttf-fira-code ttf-monoid ttf-nerd-fonts-symbols-mono ttf-roboto woff-fira-code
+# Base packages
+pacman -S sway wl-clipboard waybar xdg-desktop-portal-wlr xorg-xwayland swaylock pipewire pipewire-pulse pipewire-media-session pavucontrol snapper firefox alacritty tmux
 
-systemctl enable ufw
 systemctl enable NetworkManager
-systemctl enable bluetooth.service
-systemctl enable cronie.service
-
-ufw enable
-rkhunter --propupd
-
-# TODO: setup etckeeper
-
