@@ -1,8 +1,3 @@
-# Updating package database
-pacman -Sy --noconfirm
-
-pacman -S --noconfirm reflector btrfs-progs neovim
-
 lsblk
 
 echo "=================="
@@ -16,63 +11,29 @@ sgdisk -Z ${DISK}
 
 # Creating root and boot partitions
 sgdisk -a 2048 -o ${DISK}
-
 sgdisk -n 1:0:+550M ${DISK}
-
-sgdisk -n 2:0:0     ${DISK}
-
+sgdisk -n 2:0:0 ${DISK}
 sgdisk -t 1:ef00 ${DISK}
-
 sgdisk -c 1:"UEFI" ${DISK}
-
 sgdisk -c 2:"ROOT" ${DISK}
 
-CRYPTROOT=${DISK}p2
-BOOT=${DISK}p1
+ROOT=${DISK}2
+BOOT=${DISK}1
 
-# Encrypting
-cryptsetup --type=luks2 -s 512 -h sha512 -i 8000 --use-random -y luksFormat ${CRYPTROOT}
+# Formating boot partition
+mkfs.vfat -F32 -n efi ${BOOT}
 
-cryptsetup open ${CRYPTROOT} cryptroot
+# Formating root partition
+mkfs.ext4 -L nixos ${ROOT}
 
-mkfs.vfat -F32 -n EFI ${BOOT}
+# Mounting partitions
+mount /dev/disk/by-label/nixos /mnt
 
-# BTRFS setup
-mkfs.btrfs -L ROOT /dev/mapper/cryptroot
+mkdir /mnt/boot
+mount /dev/disk/by-label/efi /mnt/boot
 
-mount /dev/mapper/cryptroot /mnt
+# Generating basic config file
+nixos-generate-config --root /mnt
 
-btrfs subvolume create /mnt/@
-btrfs subvolume create /mnt/@home
-btrfs subvolume create /mnt/@snapshots
-btrfs subvolume create /mnt/@var_log
-
-umount /mnt
-
-mount -o noatime,commit=120,compress=zstd,space_cache,subvol=@ /dev/mapper/cryptroot /mnt
-
-mkdir -p /mnt/{boot,home,var/log}
-
-mount -o noatime,commit=120,compress=zstd,space_cache,ssd,subvol=@home /dev/mapper/cryptroot /mnt/home
-mount -o subvol=@var_log /dev/mapper/cryptroot /mnt/var/log
-
-mount ${BOOT} /mnt/boot
-
-# Installing system packages
-reflector --latest 200 --protocol https --sort rate --country Brazil,Canada,Japan,Australia,Norway,Iceland --save /etc/pacman.d/mirrorlist
-
-pacstrap /mnt linux linux-lts linux-firmware base base-devel btrfs-progs amd-ucode neovim vim networkmanager network-manager-applet
-
-genfstab -U /mnt >> /mnt/etc/fstab
-
-echo ""
-echo "=================="
-echo ""
-echo "Chroot (run the next script!!!!)"
-echo "./afterarchroot.sh"
-echo "=================="
-echo ""
-
-cp afterarchroot.sh /mnt/
-
-arch-chroot /mnt
+# Installing basic system
+nixos-install
